@@ -24,3 +24,6 @@ This functions plots a microbial growth curve with the option to add a confidenc
 Under the hood, it is a simple ggplot2 wrapper, with defaults set depending on the type of plot.
 As such, it can be expanded upon using the usual ggplot2 syntax.
 }
+\seealso{
+The \href{https://ggplot2-book.org/getting-started}{first steps chapter} of the online ggplot2 book.
+}

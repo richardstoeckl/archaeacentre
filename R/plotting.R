@@ -11,6 +11,7 @@
 #' @param group The grouping variable. Usually the name of the strain or condition.
 #' @param color The color variable. Usually the name of the strain or condition.
 #' @param type The type of plot to create. Currently only 'robert' is supported. This sets the default look for the plot.
+#' @inherit ggplot2::ggplot seealso
 #' @importFrom ggplot2 ggplot aes geom_line geom_point geom_ribbon scale_y_log10 annotation_logticks theme scale_x_continuous
 #' @importFrom ggpubr theme_pubr
 #' @importFrom dplyr mutate group_by ungroup
