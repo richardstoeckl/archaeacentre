@@ -1,0 +1,91 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# archaeacentre
+
+<!-- badges: start -->
+
+[![GitHub
+issues](https://img.shields.io/github/issues/richardstoeckl/archaeacentre)](https://github.com/richardstoeckl/archaeacentre/issues)
+[![GitHub
+pulls](https://img.shields.io/github/issues-pr/richardstoeckl/archaeacentre)](https://github.com/richardstoeckl/archaeacentre/pulls)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Bioc release
+status](http://www.bioconductor.org/shields/build/release/bioc/archaeacentre.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/archaeacentre)
+[![Bioc devel
+status](http://www.bioconductor.org/shields/build/devel/bioc/archaeacentre.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/archaeacentre)
+[![Bioc downloads
+rank](https://bioconductor.org/shields/downloads/release/archaeacentre.svg)](http://bioconductor.org/packages/stats/bioc/archaeacentre/)
+[![Bioc
+support](https://bioconductor.org/shields/posts/archaeacentre.svg)](https://support.bioconductor.org/tag/archaeacentre)
+[![Bioc
+history](https://bioconductor.org/shields/years-in-bioc/archaeacentre.svg)](https://bioconductor.org/packages/release/bioc/html/archaeacentre.html#since)
+[![Bioc last
+commit](https://bioconductor.org/shields/lastcommit/devel/bioc/archaeacentre.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/archaeacentre/)
+[![Bioc
+dependencies](https://bioconductor.org/shields/dependencies/release/archaeacentre.svg)](https://bioconductor.org/packages/release/bioc/html/archaeacentre.html#since)
+[![check-bioc](https://github.com/richardstoeckl/archaeacentre/actions/workflows/check-bioc.yml/badge.svg)](https://github.com/richardstoeckl/archaeacentre/actions/workflows/check-bioc.yml)
+[![Codecov test
+coverage](https://codecov.io/gh/richardstoeckl/archaeacentre/graph/badge.svg)](https://app.codecov.io/gh/richardstoeckl/archaeacentre)
+<!-- badges: end -->
+
+Provides default plots and functions for the German Archaea Centre.
+
+## Installation instructions
+
+Get the latest stable `R` release from
+[CRAN](http://cran.r-project.org/). Then install the development of
+`archaeacentre` from
+[GitHub](https://github.com/richardstoeckl/archaeacentre) with:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("richardstoeckl/archaeacentre")
+```
+
+## Citation
+
+Below is the citation output from using `citation('archaeacentre')` in
+R. Please run this yourself to check for any updates on how to cite
+**archaeacentre**.
+
+``` r
+print(citation('archaeacentre'), bibtex = TRUE)
+#> <0-length citation>
+```
+
+Please note that the `archaeacentre` was only made possible thanks to
+many other R and bioinformatics software authors, which are cited either
+in the vignettes and/or the paper(s) describing this package.
+
+## Development tools
+
+- Continuous code testing is possible thanks to [GitHub
+  actions](https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/)
+  through *[usethis](https://CRAN.R-project.org/package=usethis)*,
+  *[remotes](https://CRAN.R-project.org/package=remotes)*, and
+  *[rcmdcheck](https://CRAN.R-project.org/package=rcmdcheck)* customized
+  to use [Bioconductor’s docker
+  containers](https://www.bioconductor.org/help/docker/) and
+  *[BiocCheck](https://bioconductor.org/packages/3.20/BiocCheck)*.
+- Code coverage assessment is possible thanks to
+  [codecov](https://codecov.io/gh) and
+  *[covr](https://CRAN.R-project.org/package=covr)*.
+- The [documentation
+  website](http://richardstoeckl.github.io/archaeacentre) is
+  automatically updated thanks to
+  *[pkgdown](https://CRAN.R-project.org/package=pkgdown)*.
+- The code is styled automatically thanks to
+  *[styler](https://CRAN.R-project.org/package=styler)*.
+- The documentation is formatted thanks to
+  *[devtools](https://CRAN.R-project.org/package=devtools)* and
+  *[roxygen2](https://CRAN.R-project.org/package=roxygen2)*.
+
+For more details, check the `dev` directory.
+
+This package was developed using
+*[biocthis](https://bioconductor.org/packages/3.20/biocthis)*.
