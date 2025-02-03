@@ -15,9 +15,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
     BiocStyle,
-    dplyr,
-    ggplot2,
-    ggpubr,
     knitr,
     RefManageR,
     rmarkdown,
@@ -25,3 +22,8 @@ Suggests:
     testthat
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Imports: 
+    dplyr,
+    ggplot2,
+    ggpubr,
+    magrittr
