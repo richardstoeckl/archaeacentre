@@ -50,7 +50,7 @@ Below is the citation output from using `citation('archaeacentre')` in R. Please
 run this yourself to check for any updates on how to cite __archaeacentre__.
 
 ```{r 'citation', eval = requireNamespace('archaeacentre')}
-print(citation('archaeacentre'), bibtex = TRUE)
+print(citation("archaeacentre"), bibtex = TRUE)
 ```
 
 Please note that the `archaeacentre` was only made possible thanks to many other R and bioinformatics software authors, which are cited either in the vignettes and/or the paper(s) describing this package.

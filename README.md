@@ -54,7 +54,7 @@ R. Please run this yourself to check for any updates on how to cite
 **archaeacentre**.
 
 ``` r
-print(citation('archaeacentre'), bibtex = TRUE)
+print(citation("archaeacentre"), bibtex = TRUE)
 #> <0-length citation>
 ```
 
