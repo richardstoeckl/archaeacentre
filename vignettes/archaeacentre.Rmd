@@ -46,7 +46,7 @@ BiocManager::install("richardstoeckl/archaeacentre")
 
 # Plot a basic growth curve
 
-```{r 'load data', eval = TRUE, echo = TRUE}
+```{r 'basic growth curve', eval = TRUE, echo = TRUE}
 # 1. load the package
 library(archaeacentre)
 
@@ -61,12 +61,13 @@ archaeacentre::plotGrowthCurve(testData, timepoint, concentration, grouping = c(
 
 Since the `plotGrowthCurve` function is basically just a wrapper around a ggplot2 plot with some default settings, you can modify the plot to your liking. Here is one example:
 
-```{r 'load data', eval = TRUE, echo = TRUE}
+```{r 'modify growth curve plot', eval = TRUE, echo = TRUE}
 library(ggplot2)
 
 archaeacentre::plotGrowthCurve(testData, timepoint, concentration, grouping = c("timepoint", "organism"), organism, type = "robert") +
     ggplot2::labs(title = "Growth curve of some test data", x = "Timepoint after inocculation in [h]", y = "Concentration in [cells/mL]") +
-    ggplot2::guides(color = guide_legend(title = "Species"))
+    ggplot2::guides(color = guide_legend(title = "Species")) +
+    ggplot2::facet_grid(~organism)
 ```
 
 
