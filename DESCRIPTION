@@ -26,6 +26,7 @@ Imports:
     dplyr,
     ggplot2,
     ggpubr,
+    scales,
     magrittr
 Depends: 
     R (>= 3.5)
