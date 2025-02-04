@@ -1,3 +1,11 @@
+#' Example Dataset for microbial Growth Curves
+#'
+#' @name growthData
+#' @docType data
+#' @keywords data
+NULL
+
+
 #' Prepare Data for growth curve plotting
 #' @keywords internal
 #' @param data A data frame containing the data to plot.
