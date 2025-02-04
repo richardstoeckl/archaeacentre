@@ -4,18 +4,18 @@
 \alias{plotGrowthCurve}
 \title{Plot a microbial growth curve}
 \usage{
-plotGrowthCurve(data, x, y, group, color, type = "robert")
+plotGrowthCurve(data, x, y, grouping, color, type = "robert")
 }
 \arguments{
 \item{data}{A data frame containing the data to plot.}
 
 \item{x}{The x-axis variable. Usually the time in hours after starting the experiment.}
 
-\item{y}{The y-axis variable. Usually the concentration of microbes per mL as a raw number}
+\item{y}{The y-axis variable. Usually the concentration of microbes per mL as a \code{double}}
 
-\item{group}{The grouping variable. Usually the name of the strain or condition.}
+\item{grouping}{A character vector containing one or more column names for the grouping variables. Usually "c("timepoint", "organism")".}
 
-\item{color}{The color variable. Usually the name of the strain or condition.}
+\item{color}{The color variable. Usually the strain or condition.}
 
 \item{type}{The type of plot to create. Currently only 'robert' is supported. This sets the default look for the plot.}
 }
@@ -23,6 +23,14 @@ plotGrowthCurve(data, x, y, group, color, type = "robert")
 This functions plots a microbial growth curve with the option to add a confidence interval.
 Under the hood, it is a simple ggplot2 wrapper, with defaults set depending on the type of plot.
 As such, it can be expanded upon using the usual ggplot2 syntax.
+}
+\examples{
+\dontrun{
+# load example data from this package
+growthData <- archaeacentre::growthData
+# plot the growth curve
+plotGrowthCurve(growthData, timepoint, concentration, grouping = c("timepoint", "organism"), organism, type = "robert")
+}
 }
 \seealso{
 The \href{https://ggplot2-book.org/getting-started}{first steps chapter} of the online ggplot2 book.

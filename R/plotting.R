@@ -1,3 +1,19 @@
+#' Prepare Data for growth curve plotting
+#' @keywords internal
+#' @param data A data frame containing the data to plot.
+#' @param x The x-axis variable. Usually the time in hours after starting the experiment.
+#' @param y The y-axis variable. Usually the concentration of microbes per mL as a raw number
+#' @param grouping The grouping variable. Usually the name of the strain or condition.
+#' @param color The color variable. Usually the name of the strain or condition.
+#' @importFrom dplyr mutate group_by ungroup across all_of
+.prepareDataForGrowthCurve <- function(data, x, y, grouping, color) {
+    dataForPlot <- data %>%
+        dplyr::group_by(across(all_of(grouping))) %>%
+        dplyr::mutate(XVAR = as.double({{ x }}), YVAR = as.double({{ y }}), COLORVAR = {{ color }}) %>%
+        dplyr::mutate(MINVAR = min(YVAR), MAXVAR = max(YVAR), MEANVAR = mean(YVAR))
+    return(dataForPlot)
+}
+
 #' Plot a microbial growth curve
 #'
 #' @description
@@ -7,29 +23,33 @@
 #'
 #' @param data A data frame containing the data to plot.
 #' @param x The x-axis variable. Usually the time in hours after starting the experiment.
-#' @param y The y-axis variable. Usually the concentration of microbes per mL as a raw number
-#' @param group The grouping variable. Usually the name of the strain or condition.
-#' @param color The color variable. Usually the name of the strain or condition.
+#' @param y The y-axis variable. Usually the concentration of microbes per mL as a `double`
+#' @param grouping A character vector containing one or more column names for the grouping variables. Usually "c("timepoint", "organism")".
+#' @param color The color variable. Usually the strain or condition.
 #' @param type The type of plot to create. Currently only 'robert' is supported. This sets the default look for the plot.
 #' @inherit ggplot2::ggplot seealso
-#' @importFrom ggplot2 ggplot aes geom_line geom_point geom_ribbon scale_y_log10 annotation_logticks theme scale_x_continuous
+#' @examples
+#' \dontrun{
+#' # load example data from this package
+#' growthData <- archaeacentre::growthData
+#' # plot the growth curve
+#' plotGrowthCurve(growthData, timepoint, concentration, grouping = c("timepoint", "organism"), organism, type = "robert")
+#' }
+#' @import ggplot2
 #' @importFrom ggpubr theme_pubr
-#' @importFrom dplyr mutate group_by ungroup
+#' @importFrom scales label_log
 #' @export
-plotGrowthCurve <- function(data, x, y, group, color, type = "robert") {
-    dataForPlot <- data %>%
-        dplyr::group_by(group) %>%
-        dplyr::mutate(min = min(y), max = max(y)) %>%
-        dplyr::ungroup()
+plotGrowthCurve <- function(data, x, y, grouping, color, type = "robert") {
+    dataForPlot <- .prepareDataForGrowthCurve({{ data }}, {{ x }}, {{ y }}, {{ grouping }}, {{ color }})
 
     if (type == "robert") {
-        plot <- ggplot(dataForPlot, aes(x = x, y = y, group = group, color = color)) +
-            geom_line() +
+        plot <- ggplot(dataForPlot, aes(x = XVAR, y = MEANVAR, color = COLORVAR, group = COLORVAR)) +
+            geom_line(show.legend = FALSE) +
             geom_point() +
-            geom_ribbon(aes(ymin = min, ymax = max, fill = color), alpha = 0.5) +
-            scale_y_log10(labels = label_log(digits = 2)) +
+            geom_ribbon(aes(ymin = MINVAR, ymax = MAXVAR, fill = COLORVAR), alpha = 0.5, show.legend = FALSE) +
+            scale_y_log10(labels = scales::label_log(digits = 2)) +
             annotation_logticks(sides = "l") +
-            theme_pubr() +
+            ggpubr::theme_pubr() +
             theme(panel.grid.minor = element_blank()) +
             scale_x_continuous(expand = c(0, 1))
     } else {

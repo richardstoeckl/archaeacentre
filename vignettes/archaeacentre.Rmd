@@ -1,10 +1,10 @@
 ---
-title: "Introduction to archaeacentre"
+title: "Introduction to the archaeacentre package"
 author: 
-  - name: Your name
+  - name: Richard Stöckl
     affiliation:
-    - Your institution
-    email: your.email@somewhere.com
+    - Archaea Centre Regensburg
+    email: richard.stoeckl@ur.de
 output: 
   BiocStyle::html_document:
     self_contained: yes
@@ -27,3 +27,46 @@ knitr::opts_chunk$set(
     crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
 )
 ```
+
+# Basics
+
+## Install `archaeacentre`
+
+`R` is an open-source statistical environment which can be easily modified to enhance its functionality via packages. `r Biocpkg("biocthis")` is a `R` package available via the [Github](https://github.com/richardstoeckl/archaeacentre) repository.
+
+Get the latest stable `R` release from [CRAN](http://cran.r-project.org/). Then install the development of `archaeacentre` from [GitHub](https://github.com/richardstoeckl/archaeacentre) with:
+
+```{r 'install_dev', eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("richardstoeckl/archaeacentre")
+```
+
+# Plot a basic growth curve
+
+```{r 'load data', eval = TRUE, echo = TRUE}
+# 1. load the package
+library(archaeacentre)
+
+# 2. load some test data included with the package
+testData <- archaeacentre::growthData
+
+# 3. plot the growth curves in their most basic way, with the presets for "robert":
+archaeacentre::plotGrowthCurve(testData, timepoint, concentration, grouping = c("timepoint", "organism"), organism, type = "robert")
+```
+
+# Modify your growth curve plot
+
+Since the `plotGrowthCurve` function is basically just a wrapper around a ggplot2 plot with some default settings, you can modify the plot to your liking. Here is one example:
+
+```{r 'load data', eval = TRUE, echo = TRUE}
+library(ggplot2)
+
+archaeacentre::plotGrowthCurve(testData, timepoint, concentration, grouping = c("timepoint", "organism"), organism, type = "robert") +
+    ggplot2::labs(title = "Growth curve of some test data", x = "Timepoint after inocculation in [h]", y = "Concentration in [cells/mL]") +
+    ggplot2::guides(color = guide_legend(title = "Species"))
+```
+
+
