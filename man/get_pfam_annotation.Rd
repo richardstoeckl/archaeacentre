@@ -2,12 +2,14 @@
 % Please edit documentation in R/getPfamAnnotationForPDBFilenames.R
 \name{get_pfam_annotation}
 \alias{get_pfam_annotation}
-\title{Retrieve Pfam Annotations from RCSB API}
+\title{Retrieve Pfam Annotations from RCSB API (batched)}
 \usage{
-get_pfam_annotation(rcsb_ids)
+get_pfam_annotation(rcsb_ids, batch_size = 1000)
 }
 \arguments{
 \item{rcsb_ids}{A character vector of RCSB polymer entity instance IDs.}
+
+\item{batch_size}{An integer specifying the number of entity IDs to process in one batch (default: 1000).}
 }
 \value{
 A data frame with columns:

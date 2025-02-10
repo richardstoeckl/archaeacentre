@@ -2,12 +2,14 @@
 % Please edit documentation in R/getPfamAnnotationForPDBFilenames.R
 \name{get_auth_asym_ids}
 \alias{get_auth_asym_ids}
-\title{Retrieve Polymer Entity Identifiers from RCSB API}
+\title{Retrieve Polymer Entity Identifiers from RCSB API (batched)}
 \usage{
-get_auth_asym_ids(assembly_ids)
+get_auth_asym_ids(assembly_ids, batch_size = 1000)
 }
 \arguments{
 \item{assembly_ids}{A character vector of assembly IDs.}
+
+\item{batch_size}{An integer specifying the number of assembly IDs to process in one batch (default: 1000).}
 }
 \value{
 A data frame with columns:

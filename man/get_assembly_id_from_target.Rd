@@ -14,6 +14,7 @@ A data frame with columns:
 \itemize{
 \item \code{target}: The original target string.
 \item \code{assembly_id}: The extracted PDB assembly ID.
+\item \code{auth_asym_id}: The author-specified ID.
 }
 }
 \description{

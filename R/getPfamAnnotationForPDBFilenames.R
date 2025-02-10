@@ -6,165 +6,149 @@
 #' @return A data frame with columns:
 #'   - `target`: The original target string.
 #'   - `assembly_id`: The extracted PDB assembly ID.
+#'   - `auth_asym_id`: The author-specified ID.
 #' @keywords: internal
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_extract str_c str_to_upper
+#' @importFrom tibble tibble
 get_assembly_id_from_target <- function(target) {
-    pdb_id <- toupper(stringr::str_extract(target, "\\w{4}"))
-    assembly_number <- stringr::str_extract(target, "(?<=assembly)\\d(?=\\.cif)")
-    assembly_ids <- paste0(pdb_id, "-", assembly_number)
-    df <- base::data.frame(target = target, assembly_id = assembly_ids)
-    return(df)
+    tibble(
+        target = target,
+        assembly_id = str_c(
+            str_to_upper(str_extract(target, "\\w{4}")), "-",
+            str_extract(target, "(?<=assembly)\\d(?=\\.cif)")
+        ),
+        auth_asym_id = str_c(str_to_upper(str_extract(target, "\\w{4}")), sub(".*_(.*)", "\\1", target), sep = "_")
+    )
 }
 
-#' Retrieve Polymer Entity Identifiers from RCSB API
+#' Retrieve Polymer Entity Identifiers from RCSB API (batched)
 #'
 #' This function queries the RCSB GraphQL API to retrieve polymer entity identifiers
 #' (auth_asym_id and rcsb_id) for a given assembly ID.
 #'
 #' @param assembly_ids A character vector of assembly IDs.
+#' @param batch_size An integer specifying the number of assembly IDs to process in one batch (default: 1000).
 #' @return A data frame with columns:
 #'   - `entry_id`: The PDB entry ID.
 #'   - `assembly_id`: The corresponding assembly ID.
 #'   - `auth_asym_id`: The author-specified asymmetry ID.
 #'   - `rcsb_id`: The RCSB polymer entity instance ID.
 #' @keywords: internal
-#' @importFrom httr POST accept_json content
-get_auth_asym_ids <- function(assembly_ids) {
-    # Prepare GraphQL query
+#' @importFrom httr POST accept_json content stop_for_status
+#' @importFrom purrr map_dfr
+#' @importFrom tibble tibble
+get_auth_asym_ids <- function(assembly_ids, batch_size = 1000) {
     query <- "
-  query($id: [String!]!) {
-    assemblies(assembly_ids: $id) {
-      rcsb_assembly_info {
-        entry_id
-        assembly_id
-      }
-      polymer_entity_instances {
-        rcsb_polymer_entity_instance_container_identifiers {
-          auth_asym_id
-          rcsb_id
+    query($id: [String!]!) {
+      assemblies(assembly_ids: $id) {
+        rcsb_assembly_info {
+          entry_id
+          assembly_id
+        }
+        polymer_entity_instances {
+          rcsb_polymer_entity_instance_container_identifiers {
+            auth_asym_id
+            rcsb_id
+          }
         }
       }
-    }
-  }"
+    }"
 
-    # Send POST request to GraphQL API
     baseurl <- "https://data.rcsb.org/graphql"
-    resp <- httr::POST(
-        baseurl,
-        httr::accept_json(),
-        body = list(query = query, variables = list(id = assembly_ids)),
-        encode = "json"
-    )
 
-    # Check for errors in the response
-    if (httr::http_error(resp)) {
-        stop("Access to PDB server failed")
-    } else {
-        ret <- httr::content(resp)
-    }
+    process_batch <- function(batch) {
+        resp <- httr::POST(baseurl, httr::accept_json(),
+            body = list(query = query, variables = list(id = batch)), encode = "json"
+        )
 
-    if ("errors" %in% names(ret)) {
-        stop("Retrieving data from PDB failed")
-    }
+        httr::stop_for_status(resp, "Access to PDB server failed")
 
-    if (!"data" %in% names(ret) || length(ret$data$assemblies) == 0) {
-        stop("No data retrieved")
-    }
+        ret <- httr::content(resp, as = "parsed")
 
-    # Extract and format the data
-    data <- lapply(ret$data$assemblies, function(assembly) {
-        entry_id <- assembly$rcsb_assembly_info$entry_id
-        assembly_id <- assembly$rcsb_assembly_info$assembly_id
-        lapply(assembly$polymer_entity_instances, function(instance) {
-            list(
-                entry_id = entry_id,
-                assembly_id = assembly_id,
-                auth_asym_id = instance$rcsb_polymer_entity_instance_container_identifiers$auth_asym_id,
-                rcsb_id = instance$rcsb_polymer_entity_instance_container_identifiers$rcsb_id
-            )
+        if ("errors" %in% names(ret) || !"data" %in% names(ret) || length(ret$data$assemblies) == 0) {
+            return(tibble())
+        }
+
+        map_dfr(ret$data$assemblies, function(assembly) {
+            entry_id <- assembly$rcsb_assembly_info$entry_id
+            assembly_id <- assembly$rcsb_assembly_info$assembly_id
+
+            map_dfr(assembly$polymer_entity_instances, function(instance) {
+                tibble(
+                    entry_id = entry_id,
+                    assembly_id = assembly_id,
+                    auth_asym_id = instance$rcsb_polymer_entity_instance_container_identifiers$auth_asym_id,
+                    rcsb_id = instance$rcsb_polymer_entity_instance_container_identifiers$rcsb_id
+                )
+            })
         })
-    })
+    }
 
-    # Flatten the list and create a data frame
-    data <- do.call(rbind, lapply(data, function(x) do.call(rbind, x)))
-    data <- data.frame(data, stringsAsFactors = FALSE)
-
-    return(data)
+    batches <- split(assembly_ids, ceiling(seq_along(assembly_ids) / batch_size))
+    map_dfr(batches, process_batch)
 }
 
-#' Retrieve Pfam Annotations from RCSB API
+#' Retrieve Pfam Annotations from RCSB API (batched)
 #'
 #' This function queries the RCSB GraphQL API to retrieve Pfam domain descriptions
 #' for a given set of RCSB polymer entity instance IDs.
 #'
 #' @param rcsb_ids A character vector of RCSB polymer entity instance IDs.
+#' @param batch_size An integer specifying the number of entity IDs to process in one batch (default: 1000).
 #' @return A data frame with columns:
 #'   - `rcsb_id`: The RCSB polymer entity instance ID.
 #'   - `title`: The title of the PDB entry.
 #'   - `pfam_description`: The Pfam description for the entity.
 #' @keywords: internal
-#' @importFrom httr POST accept_json content
-get_pfam_annotation <- function(rcsb_ids) {
-    # Prepare GraphQL query
+#' @importFrom httr POST accept_json content stop_for_status
+#' @importFrom purrr map_dfr map_chr
+#' @importFrom tibble tibble
+get_pfam_annotation <- function(rcsb_ids, batch_size = 1000) {
     query <- "
-  query($id: [String!]!) {
-    polymer_entity_instances(instance_ids: $id) {
-      rcsb_id
-      polymer_entity {
-        entry {
-            struct {
-              title
-            }
-        }
-        pfams {
-          rcsb_pfam_description
+    query($id: [String!]!) {
+      polymer_entity_instances(instance_ids: $id) {
+        rcsb_id
+        polymer_entity {
+          entry {
+              struct {
+                title
+              }
+          }
+          pfams {
+            rcsb_pfam_description
+          }
         }
       }
-    }
-  }"
+    }"
 
-    # Send POST request to GraphQL API
     baseurl <- "https://data.rcsb.org/graphql"
-    resp <- httr::POST(
-        baseurl,
-        httr::accept_json(),
-        body = list(query = query, variables = list(id = rcsb_ids)),
-        encode = "json"
-    )
 
-    # Check for errors in the response
-    if (httr::http_error(resp)) {
-        stop("Access to PDB server failed")
-    } else {
-        ret <- httr::content(resp)
-    }
+    process_batch <- function(batch) {
+        resp <- httr::POST(baseurl, httr::accept_json(),
+            body = list(query = query, variables = list(id = batch)), encode = "json"
+        )
 
-    if ("errors" %in% names(ret)) {
-        stop("Retrieving data from PDB failed")
-    }
+        httr::stop_for_status(resp, "Access to PDB server failed")
 
-    if (!"data" %in% names(ret) || length(ret$data$polymer_entity_instances) == 0) {
-        stop("No data retrieved")
-    }
+        ret <- httr::content(resp, as = "parsed")
 
-    # Extract and format the data
-    data <- lapply(ret$data$polymer_entity_instances, function(instance) {
-        rcsb_id <- instance$rcsb_id
-        title <- instance$polymer_entity$entry$struct$title
-        if (is.null(instance$polymer_entity$pfams) || length(instance$polymer_entity$pfams) == 0) {
-            pfam_descriptions <- NA
-        } else {
-            pfam_descriptions <- sapply(instance$polymer_entity$pfams, function(pfam) {
-                pfam$rcsb_pfam_description
-            })
+        if ("errors" %in% names(ret) || !"data" %in% names(ret) || length(ret$data$polymer_entity_instances) == 0) {
+            return(tibble())
         }
-        data.frame(rcsb_id = rcsb_id, title = title, pfam_description = pfam_descriptions, stringsAsFactors = FALSE)
-    })
 
-    # Combine all data frames into one
-    data <- do.call(rbind, data)
+        map_dfr(ret$data$polymer_entity_instances, function(instance) {
+            tibble(
+                rcsb_id = instance$rcsb_id,
+                title = instance$polymer_entity$entry$struct$title,
+                pfam_description = ifelse(is.null(instance$polymer_entity$pfams), NA_character_,
+                    paste(map_chr(instance$polymer_entity$pfams, "rcsb_pfam_description"), collapse = ", ")
+                )
+            )
+        })
+    }
 
-    return(data)
+    batches <- split(rcsb_ids, ceiling(seq_along(rcsb_ids) / batch_size))
+    map_dfr(batches, process_batch)
 }
 
 
@@ -213,48 +197,33 @@ get_pfam_annotation <- function(rcsb_ids) {
 #' head(pfam_results)
 #' }
 #'
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_extract str_c str_to_upper
+#' @importFrom dplyr left_join join_by select mutate filter
+#' @importFrom purrr map_dfr
 #' @export
 get_pfam_annotation_for_targets <- function(targets, batch_size = 1000) {
-    # Function to process a batch of targets
-    process_batch <- function(target_batch) {
-        # Step 1: Use get_assembly_id_from_target() to get the assembly_id for each target
-        # assembly_ids <- sapply(unique(target_batch), get_assembly_id_from_target)
-        assembly_ids <- do.call(rbind, lapply(target_batch, get_assembly_id_from_target))
+    # Step 1: Extract assembly IDs
+    assembly_ids_df <- map_dfr(targets, get_assembly_id_from_target)
+    unique_assembly_ids <- unique(assembly_ids_df$assembly_id)
 
-        # Step 2: Use get_auth_asym_ids() to get all rcsb_ids for the assemblies
-        auth_asym_data <- get_auth_asym_ids(assembly_ids$assembly_id)
-        auth_asym_data$auth_asym_id_for_filter <- paste(auth_asym_data$entry_id, auth_asym_data$auth_asym_id, sep = "_")
+    # Step 2: Get auth_asym_ids and rcsb_ids (batched)
+    auth_asym_data <- get_auth_asym_ids(unique_assembly_ids, batch_size) %>%
+        mutate(auth_asym_id_for_filter = str_c(entry_id, auth_asym_id, sep = "_"))
 
-        # Step 3: Extract the auth_asym_id from the target names
-        target_auth_asym_ids <- sapply(target_batch, function(target) {
-            paste(toupper(stringr::str_extract(target, "\\w{4}")), sub(".*_(.*)", "\\1", target), sep = "_")
-        })
+    # Step 3: Filter to match only relevant targets
+    filtered_data <- auth_asym_data %>%
+        dplyr::filter(auth_asym_id_for_filter %in% unique(assembly_ids_df$auth_asym_id))
 
-        # Step 4: Filter the returned dataframe to get the rcsb_id for the auth_asym_ids that are encoded in the target names
-        filtered_data <- auth_asym_data[auth_asym_data$auth_asym_id_for_filter %in% target_auth_asym_ids, ]
+    # Step 4: Get PFAM annotations for rcsb_ids (batched)
+    unique_rcsb_ids <- unique(filtered_data$rcsb_id)
+    pfam_data <- get_pfam_annotation(unique_rcsb_ids, batch_size)
 
-        # Step 5: Get the annotation for these rcsb_id using get_pfam_annotation()
-        pfam_data <- get_pfam_annotation(filtered_data$rcsb_id)
+    # Step 5: Merge results
+    result <- left_join(filtered_data, pfam_data, by = "rcsb_id") %>%
+        mutate(assembly_id_for_merge = str_c(entry_id, assembly_id, sep = "-"))
 
-        # Step 6: Merge the filtered data with the PFAM data
-        result <- merge(filtered_data, pfam_data, by = "rcsb_id", all.x = TRUE, sort = FALSE)
+    final_result <- left_join(result, assembly_ids_df, join_by(auth_asym_id_for_filter == auth_asym_id)) %>%
+        select(target, rcsb_id, title, pfam_description)
 
-        # Step 7: Get the rcsb_id for all targets
-        result$assembly_id_for_merge <- paste(result$entry_id, result$assembly_id, sep = "-")
-
-        # Step 7:
-        result2 <- merge(result, assembly_ids, by.x = "assembly_id_for_merge", by.y = "assembly_id", all.x = TRUE, sort = FALSE)
-        result2 <- result2[, c("target", "rcsb_id", "title", "pfam_description")]
-
-        return(result2)
-    }
-
-    # Split targets into batches
-    target_batches <- split(unique(targets), ceiling(seq_along(unique(targets)) / batch_size))
-
-    # Process each batch and combine results
-    results <- do.call(rbind, lapply(target_batches, process_batch))
-
-    return(results)
+    return(final_result)
 }
