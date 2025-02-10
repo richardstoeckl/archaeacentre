@@ -41,10 +41,12 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 
-BiocManager::install("richardstoeckl/archaeacentre")
+BiocManager::install("remotes", "richardstoeckl/archaeacentre")
 ```
 
-# Plot a basic growth curve
+# Presets for growth curves of microbial growth data
+
+## Plot a basic growth curve
 
 ```{r 'basic growth curve', eval = TRUE, echo = TRUE}
 # 1. load the package
@@ -57,7 +59,7 @@ testData <- archaeacentre::growthData
 archaeacentre::plotGrowthCurve(testData, timepoint, concentration, grouping = c("timepoint", "organism"), organism, type = "robert")
 ```
 
-# Modify your growth curve plot
+## Modify your growth curve plot
 
 Since the `plotGrowthCurve` function is basically just a wrapper around a ggplot2 plot with some default settings, you can modify the plot to your liking. Here is one example:
 
@@ -70,4 +72,20 @@ archaeacentre::plotGrowthCurve(testData, timepoint, concentration, grouping = c(
     ggplot2::facet_grid(~organism)
 ```
 
+# Get PDB Annotation data for a given PDB filename as returned by Foldseek
 
+\href{https://github.com/steineggerlab/foldseek}{Foldseek} is a fast search tool for comparing protein structures. 
+When searching for similar structures in the PDB, Foldseek returns a table which contains the "target" column.
+In the case of searches against the PDB, this target column contains the PDB filename of the hit, which is not easily interpretable.
+
+The \href{https://www.rcsb.org/}{Research Collaboratory for Structural Bioinformatics (RCSB)} provides structural and functional annotations for macromolecules stored in the Protein Data Bank (PDB). 
+
+The `get_pfam_annotation_for_targets()` function automates the extraction of Pfam domain annotations for these target PDB filenames returned by Foldseek,using the \href{https://data.rcsb.org/index.html#gql-api}{RCSB GraphQL API}.
+
+```{r 'get_pfam_annotation_for_targets', eval = TRUE, echo = TRUE}
+# Get a vector of PDB filenames. This could be the "target" column of a Foldseek search result table.
+targets <- c("1U04_assembly1.cif_A", "8HL4_assembly1.cif_L18P")
+# Get the Pfam annotations for these targets. As the RCSB API has a rate limit, we recommend to use a batch size of 1000 or lower.
+pfam_results <- get_pfam_annotation_for_targets(targets, batch_size = 1000)
+head(pfam_results)
+```
