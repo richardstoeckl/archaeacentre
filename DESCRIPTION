@@ -1,6 +1,6 @@
 Package: archaeacentre
 Title: Default plots and functions for the German Archaea Centre
-Version: 1.0.1
+Version: 1.0.2
 Date: 2025-02-03
 Authors@R: 
     person("Richard", "Stöckl", , "richard.stoeckl@ur.de", role = c("aut", "cre"),

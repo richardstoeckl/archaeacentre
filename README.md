@@ -54,7 +54,7 @@ print(citation("archaeacentre"), bibtex = TRUE)
 #>   Stöckl R (2025). _Defaults and functions for the German Archaea
 #>   Centre in Regensburg_.
 #>   https://github.com/richardstoeckl/archaeacentre/archaeacentre - R
-#>   package version 1.0.0.
+#>   package version 1.0.2.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -62,7 +62,7 @@ print(citation("archaeacentre"), bibtex = TRUE)
 #>     title = {Defaults and functions for the German Archaea Centre in Regensburg},
 #>     author = {Richard Stöckl},
 #>     year = {2025},
-#>     note = {https://github.com/richardstoeckl/archaeacentre/archaeacentre - R package version 1.0.0},
+#>     note = {https://github.com/richardstoeckl/archaeacentre/archaeacentre - R package version 1.0.2},
 #>   }
 ```
 
@@ -80,9 +80,6 @@ in the vignettes and/or the paper(s) describing this package.
   to use [Bioconductor’s docker
   containers](https://www.bioconductor.org/help/docker/) and
   *[BiocCheck](https://bioconductor.org/packages/3.20/BiocCheck)*.
-- Code coverage assessment is possible thanks to
-  [codecov](https://codecov.io/gh) and
-  *[covr](https://CRAN.R-project.org/package=covr)*.
 - The [documentation
   website](http://richardstoeckl.github.io/archaeacentre) is
   automatically updated thanks to

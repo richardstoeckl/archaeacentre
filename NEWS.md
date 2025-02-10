@@ -1,3 +1,13 @@
+# archaeacentre 1.0.2
+
+IMPROVEMENTS
+
+*  Rework batch logic for `get_pfam_annotation_for_targets` for faster processing
+
+BUGFIXES
+
+* Fix `get_pfam_annotation_for_targets` returning the results of other chains from the same structure
+
 # archaeacentre 1.0.1
 
 * Update Readme and Vignettes
