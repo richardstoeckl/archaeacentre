@@ -1,3 +1,7 @@
+# archaeacentre 1.0.1
+
+* Update Readme and Vignettes
+
 # archaeacentre 1.0.0
 
 NEW FEATURES
