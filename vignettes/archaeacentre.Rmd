@@ -41,7 +41,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 
-BiocManager::install("remotes", "richardstoeckl/archaeacentre")
+BiocManager::install(c("remotes", "richardstoeckl/archaeacentre"))
 ```
 
 # Presets for growth curves of microbial growth data

@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# archaeacentre
+# ArchaeaCentre
 
 <!-- badges: start -->
 
@@ -11,26 +11,20 @@ issues](https://img.shields.io/github/issues/richardstoeckl/archaeacentre)](http
 pulls](https://img.shields.io/github/issues-pr/richardstoeckl/archaeacentre)](https://github.com/richardstoeckl/archaeacentre/pulls)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![Bioc release
-status](http://www.bioconductor.org/shields/build/release/bioc/archaeacentre.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/archaeacentre)
-[![Bioc devel
-status](http://www.bioconductor.org/shields/build/devel/bioc/archaeacentre.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/archaeacentre)
-[![Bioc downloads
-rank](https://bioconductor.org/shields/downloads/release/archaeacentre.svg)](http://bioconductor.org/packages/stats/bioc/archaeacentre/)
-[![Bioc
-support](https://bioconductor.org/shields/posts/archaeacentre.svg)](https://support.bioconductor.org/tag/archaeacentre)
-[![Bioc
-history](https://bioconductor.org/shields/years-in-bioc/archaeacentre.svg)](https://bioconductor.org/packages/release/bioc/html/archaeacentre.html#since)
-[![Bioc last
-commit](https://bioconductor.org/shields/lastcommit/devel/bioc/archaeacentre.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/archaeacentre/)
-[![Bioc
-dependencies](https://bioconductor.org/shields/dependencies/release/archaeacentre.svg)](https://bioconductor.org/packages/release/bioc/html/archaeacentre.html#since)
+<!-- [![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/archaeacentre.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/archaeacentre) -->
+<!-- [![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/archaeacentre.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/archaeacentre) -->
+<!-- [![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/archaeacentre.svg)](http://bioconductor.org/packages/stats/bioc/archaeacentre/) -->
+<!-- [![Bioc support](https://bioconductor.org/shields/posts/archaeacentre.svg)](https://support.bioconductor.org/tag/archaeacentre) -->
+<!-- [![Bioc history](https://bioconductor.org/shields/years-in-bioc/archaeacentre.svg)](https://bioconductor.org/packages/release/bioc/html/archaeacentre.html#since) -->
+<!-- [![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/archaeacentre.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/archaeacentre/) -->
+<!-- [![Bioc dependencies](https://bioconductor.org/shields/dependencies/release/archaeacentre.svg)](https://bioconductor.org/packages/release/bioc/html/archaeacentre.html#since) -->
 [![check-bioc](https://github.com/richardstoeckl/archaeacentre/actions/workflows/check-bioc.yml/badge.svg)](https://github.com/richardstoeckl/archaeacentre/actions/workflows/check-bioc.yml)
 [![Codecov test
 coverage](https://codecov.io/gh/richardstoeckl/archaeacentre/graph/badge.svg)](https://app.codecov.io/gh/richardstoeckl/archaeacentre)
 <!-- badges: end -->
 
-Provides default plots and functions for the German Archaea Centre.
+This package provides default plots and functions that are used
+internally at the German Archaea Centre in Regensburg.
 
 ## Installation instructions
 
@@ -44,7 +38,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 
-BiocManager::install("richardstoeckl/archaeacentre")
+BiocManager::install(c("remotes", "richardstoeckl/archaeacentre"))
 ```
 
 ## Citation
@@ -55,7 +49,21 @@ R. Please run this yourself to check for any updates on how to cite
 
 ``` r
 print(citation("archaeacentre"), bibtex = TRUE)
-#> <0-length citation>
+#> To cite package 'archaeacentre' in publications use:
+#> 
+#>   Stöckl R (2025). _Defaults and functions for the German Archaea
+#>   Centre in Regensburg_.
+#>   https://github.com/richardstoeckl/archaeacentre/archaeacentre - R
+#>   package version 1.0.0.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {Defaults and functions for the German Archaea Centre in Regensburg},
+#>     author = {Richard Stöckl},
+#>     year = {2025},
+#>     note = {https://github.com/richardstoeckl/archaeacentre/archaeacentre - R package version 1.0.0},
+#>   }
 ```
 
 Please note that the `archaeacentre` was only made possible thanks to

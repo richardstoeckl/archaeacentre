@@ -3,3 +3,12 @@ pkgVer <- function(pkg) {
     ver <- meta$Version
     paste0('https://github.com/richardstoeckl/archaeacentre/', pkg, ' - R package version ', ver)
 }
+
+bibentry(bibtype="manual",
+    title = "Defaults and functions for the German Archaea Centre in Regensburg",
+    author = personList(
+        as.person("Richard Stöckl")
+    ),
+    year = format(Sys.Date(), "%Y"),
+    note = pkgVer('archaeacentre')
+)

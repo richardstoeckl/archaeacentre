@@ -247,7 +247,7 @@ jobs:
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE,
               `no-check-bioc-views` = TRUE,
-              `no-check-man-doc` = TRUE,
+              `no-check-man-doc` = FALSE,
           )
         shell: Rscript {0}
 
