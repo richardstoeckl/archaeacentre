@@ -27,9 +27,11 @@ Imports:
     ggplot2,
     ggpubr,
     httr,
+    magrittr,
+    purrr,
     scales,
     stringr,
-    magrittr
+    tibble
 Depends: 
     R (>= 3.5)
 LazyData: true
