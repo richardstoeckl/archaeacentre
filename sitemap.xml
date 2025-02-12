@@ -10,9 +10,8 @@
 <url><loc>/news/index.html</loc></url>
 <url><loc>/reference/dot-prepareDataForGrowthCurve.html</loc></url>
 <url><loc>/reference/get_assembly_id_from_target.html</loc></url>
-<url><loc>/reference/get_auth_asym_ids.html</loc></url>
-<url><loc>/reference/get_pfam_annotation.html</loc></url>
 <url><loc>/reference/get_pfam_annotation_for_targets.html</loc></url>
+<url><loc>/reference/get_polymer_info.html</loc></url>
 <url><loc>/reference/growthData.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/pipe.html</loc></url>

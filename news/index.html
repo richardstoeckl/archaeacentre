@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">archaeacentre</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -50,6 +50,17 @@
       <small>Source: <a href="https://github.com/richardstoeckl/archaeacentre/blob/devel/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.1.0" id="archaeacentre-110">archaeacentre 1.1.0<a class="anchor" aria-label="anchor" href="#archaeacentre-110"></a></h2>
+<p>IMPROVEMENTS</p>
+<ul><li>Major rework for <code>get_pfam_annotation_for_targets</code>.
+<ul><li>The function is now much more resilient to unusual target filenames.</li>
+<li>The function now calls the RCSB API only once leading to less strain on the server</li>
+<li>The function now includes forced wait times to prevent overloading the server</li>
+<li>The function now includes some fallback logic if a batch of target filenames fails on the first API call</li>
+<li>The function now has the default batch size reduced to prevent overloading the server</li>
+</ul></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.2" id="archaeacentre-102">archaeacentre 1.0.2<a class="anchor" aria-label="anchor" href="#archaeacentre-102"></a></h2>
 <p>IMPROVEMENTS</p>
