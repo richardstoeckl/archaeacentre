@@ -4,12 +4,12 @@
 \alias{get_pfam_annotation_for_targets}
 \title{Retrieve Pfam Annotations for PDB Targets from RCSB API}
 \usage{
-get_pfam_annotation_for_targets(targets, batch_size = 1000)
+get_pfam_annotation_for_targets(targets, batch_size = 200)
 }
 \arguments{
 \item{targets}{A character vector of PDB filenames with assembly and chain information as returned by Foldseek in the "target" column.}
 
-\item{batch_size}{An integer specifying the number of targets to process in one batch (default: 1000).
+\item{batch_size}{An integer specifying the number of targets to process in one batch (default: 200).
 The API calls to the RCSB server are made in batches to avoid overloading the server.}
 }
 \value{
@@ -40,8 +40,7 @@ The function operates in the following steps:
 Internally, the function calls:
 \itemize{
 \item \code{get_assembly_id_from_target()}: Extracts assembly ID from PDB target name.
-\item \code{get_auth_asym_ids()}: Retrieves chain identifiers and RCSB polymer entity IDs.
-\item \code{get_pfam_annotation()}: Queries the RCSB API for Pfam domain information.
+\item \code{get_polymer_info()}: Queries the RCSB API for Pfam domain information.
 }
 }
 \section{Background}{
@@ -58,7 +57,7 @@ using the \href{https://data.rcsb.org/index.html#gql-api}{RCSB GraphQL API}.
 \examples{
 \dontrun{
 targets <- c("1ABC_assembly1.cif_A", "2XYZ_assembly2.cif_B")
-pfam_results <- get_pfam_annotation_for_targets(targets, batch_size = 1000)
+pfam_results <- get_pfam_annotation_for_targets(targets, batch_size = 400)
 head(pfam_results)
 }
 
