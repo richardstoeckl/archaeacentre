@@ -1,3 +1,14 @@
+# archaeacentre 1.1.0
+
+IMPROVEMENTS
+
+* Major rework for `get_pfam_annotation_for_targets`.
+    * The function is now much more resilient to unusual target filenames.
+    * The function now calls the RCSB API only once leading to less strain on the server
+    * The function now includes forced wait times to prevent overloading the server
+    * The function now includes some fallback logic if a batch of target filenames fails on the first API call
+    * The function now has the default batch size reduced to prevent overloading the server
+
 # archaeacentre 1.0.2
 
 IMPROVEMENTS
